@@ -30,3 +30,20 @@ def top_k_filter(logits, k):
     top_k = np.partition(logits, -k, axis=-1)[..., -k, None]
     return np.where(logits >= top_k, logits, -np.inf)
 
+# Step 4 - top_p_filter
+def top_p_filter(logits, p):
+    probs = stable_softmax(logits)
+    indicies = np.argsort(-probs, axis=-1)
+    sorted_probs = np.take_along_axis(probs, indicies, axis=-1)
+
+    cumsum = np.cumsum(sorted_probs, axis=-1)
+    remove = cumsum > p
+    remove[...,1:] = remove[...,:-1]
+    remove[...,0] = False
+    sorted_logits = np.take_along_axis(logits, indicies, axis=-1)
+    sorted_logits = np.where(remove, -np.inf, sorted_logits)
+
+    out = np.empty_like(logits)
+    np.put_along_axis(out, indicies, sorted_logits, axis=-1)
+    return out
+
