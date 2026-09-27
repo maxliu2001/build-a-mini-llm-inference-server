@@ -44,6 +44,8 @@ def top_p_filter(logits, p):
     sorted_logits = np.where(remove, -np.inf, sorted_logits)
 
     out = np.empty_like(logits)
+    # np.put_along_axis(out, indices, sorted_logits, axis=-1) takes values from sorted_logits and 
+    # writes them into out at positions specified by indices along the last axis.
     np.put_along_axis(out, indicies, sorted_logits, axis=-1)
     return out
 
