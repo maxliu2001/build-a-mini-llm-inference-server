@@ -27,6 +27,6 @@ def top_k_filter(logits, k):
     V = logits.shape[-1]
     if k >= V:
         return logits
-    top_k = np.partition(logits, -k, axis=-1)
-    return np.where(logits >= top_k[...,-k, None], logits, -np.inf)
+    top_k = np.partition(logits, -k, axis=-1)[..., -k, None]
+    return np.where(logits >= top_k, logits, -np.inf)
 
