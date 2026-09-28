@@ -49,3 +49,7 @@ def top_p_filter(logits, p):
     np.put_along_axis(out, indicies, sorted_logits, axis=-1)
     return out
 
+# Step 5 - sample_from_probs
+def sample_from_probs(probs, rng):
+    return int(rng.choice(len(probs), p=probs))
+
