@@ -84,3 +84,14 @@ def encode_prompt(text, vocab, add_bos=True):
             ids.append(2)
     return ids
 
+# Step 9 - decode_tokens
+def decode_tokens(token_ids, vocab, skip_special=True):
+    chars = []
+    for token_id in token_ids:
+        if 0 <= token_id <=1:
+            if not skip_special:
+                chars.append(vocab['id_to_token'][token_id])
+        else:
+            chars.append(vocab['id_to_token'][token_id])
+    return ''.join(chars)
+
