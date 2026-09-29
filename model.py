@@ -72,3 +72,15 @@ def build_vocab(corpus, special_tokens):
         "id_to_token": id_to_token
     }
 
+# Step 8 - encode_prompt
+def encode_prompt(text, vocab, add_bos=True):
+    ids = []
+    if add_bos and '<bos>' in vocab['token_to_id']:
+        ids.append(0)
+    for char in text:
+        if char in vocab['token_to_id']:
+            ids.append(vocab['token_to_id'][char])
+        else:
+            ids.append(2)
+    return ids
+
