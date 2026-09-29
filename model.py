@@ -95,3 +95,9 @@ def decode_tokens(token_ids, vocab, skip_special=True):
             chars.append(vocab['id_to_token'][token_id])
     return ''.join(chars)
 
+# Step 10 - embed_tokens
+import numpy as np
+
+def embed_tokens(token_ids, embedding_matrix):
+    return embedding_matrix[token_ids]
+
