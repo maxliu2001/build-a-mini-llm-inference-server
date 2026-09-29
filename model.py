@@ -57,3 +57,18 @@ def sample_from_probs(probs, rng):
 def greedy_select(logits):
     return np.argmax(logits)
 
+# Step 7 - build_vocab
+def build_vocab(corpus, special_tokens):
+    id_to_token = special_tokens.copy()
+    unique_chars = set()
+    for text in corpus:
+        for c in text:
+            unique_chars.add(c)
+    ordered_chars = sorted(unique_chars)
+    id_to_token.extend(ordered_chars)
+    token_to_id = {tok: i for i, tok in enumerate(id_to_token)}
+    return {
+        "token_to_id": token_to_id,
+        "id_to_token": id_to_token
+    }
+
