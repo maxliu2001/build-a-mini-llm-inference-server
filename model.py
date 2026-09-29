@@ -101,3 +101,9 @@ import numpy as np
 def embed_tokens(token_ids, embedding_matrix):
     return embedding_matrix[token_ids]
 
+# Step 11 - linear_projection
+def linear_projection(x, weight, bias=None):
+    if bias is not None:
+        return x @ weight + bias
+    return x @ weight
+
