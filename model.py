@@ -129,3 +129,16 @@ def append_kv(cache, k_new, v_new):
     cache['length'] = L + t
     return cache
 
+# Step 14 - causal_attention
+import numpy as np
+
+def causal_attention(q, k, v, is_causal=True):
+    d = q.shape[-1]
+    scores = q @ k.T/ np.sqrt(d)
+    if is_causal:
+        T_q, T_k = scores.shape
+        mask = np.triu(np.ones(scores.shape, dtype=bool), k = 1 + (T_k - T_q))
+        scores[mask] = -np.inf
+    weights = stable_softmax(scores)
+    return weights @ v
+
