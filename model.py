@@ -142,3 +142,17 @@ def causal_attention(q, k, v, is_causal=True):
     weights = stable_softmax(scores)
     return weights @ v
 
+# Step 15 - model_prefill
+def model_prefill(token_ids, params):
+    x = embed_tokens(token_ids, params['embedding'])
+    q = linear_projection(x, params['Wq'])
+    k = linear_projection(x, params['Wk'])
+    v = linear_projection(x, params['Wv'])
+    D = k.shape[1]
+    cache = init_kv_cache(params['max_seq_len'], D)
+    append_kv(cache, k, v)
+    attn_score = causal_attention(q, k, v, is_causal=True)
+    output = linear_projection(attn_score, params['Wo'])
+    logits = output[-1] @ params['W_out']
+    return logits, cache
+
