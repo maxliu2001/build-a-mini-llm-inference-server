@@ -188,3 +188,14 @@ def init_block_allocator(num_blocks, block_size, d_model):
     kv_cache['d_model'] = d_model
     return kv_cache
 
+# Step 19 - allocate_block
+def allocate_block(allocator, seq_id):
+    if len(allocator['free_list']) == 0:
+        raise RuntimeError('Memory full')
+    
+    reserved_block = allocator['free_list'].pop()
+    if seq_id not in allocator['seq_tables']:
+        allocator['seq_tables'][seq_id] = []
+    allocator['seq_tables'][seq_id].append(reserved_block)
+    return reserved_block
+
