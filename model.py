@@ -199,3 +199,8 @@ def allocate_block(allocator, seq_id):
     allocator['seq_tables'][seq_id].append(reserved_block)
     return reserved_block
 
+# Step 20 - free_block
+def free_block(allocator, block_id):
+    allocator['free_list'].append(block_id)
+    return None
+
