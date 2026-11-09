@@ -175,3 +175,16 @@ def model_decode_step(token_id, cache, params):
 def blocks_needed(num_tokens, block_size):
     return (num_tokens + block_size - 1) // block_size
 
+# Step 18 - init_block_allocator
+def init_block_allocator(num_blocks, block_size, d_model):
+    kv_cache = {}
+    shape = (num_blocks, block_size, d_model)
+    kv_cache['K_blocks'] = np.zeros(shape, dtype=np.float32)
+    kv_cache['V_blocks'] = np.zeros(shape, dtype=np.float32)
+    kv_cache['free_list'] = list(range(num_blocks))
+    kv_cache['seq_tables'] = {}
+    kv_cache['block_size'] = block_size
+    kv_cache['num_blocks'] = num_blocks
+    kv_cache['d_model'] = d_model
+    return kv_cache
+
