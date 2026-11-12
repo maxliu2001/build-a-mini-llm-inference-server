@@ -231,3 +231,21 @@ def append_to_paged_cache(allocator, seq_id, k_new, v_new):
         allocator['V_blocks'] [block_id, s] = v_new[i]
     allocator['seq_lengths'][seq_id] = sequence_length + t
 
+# Step 22 - gather_kv_from_blocks
+def gather_kv_from_blocks(allocator, seq_id):
+    block_table = allocator['seq_tables'][seq_id]
+    seq_length = allocator['seq_lengths'][seq_id]
+    block_size = allocator['block_size']
+    d_model = allocator['d_model']
+
+    K = np.zeros((seq_length, d_model), dtype=np.float32)
+    V = np.zeros((seq_length, d_model), dtype=np.float32)
+
+    for i, bid in enumerate(block_table):
+        start = i * block_size
+        end = min((i+1) * block_size, seq_length)
+        num_tokens = end - start
+        K[start: end] = allocator['K_blocks'][bid, :num_tokens]
+        V[start:end] = allocator['V_blocks'][bid, :num_tokens]
+    return (K,V)
+
