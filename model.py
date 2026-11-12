@@ -249,3 +249,9 @@ def gather_kv_from_blocks(allocator, seq_id):
         V[start:end] = allocator['V_blocks'][bid, :num_tokens]
     return (K,V)
 
+# Step 23 - paged_attention_step
+def paged_attention_step(q, allocator, seq_id):
+    K, V = gather_kv_from_blocks(allocator, seq_id)
+    weights = causal_attention(q, K, V)
+    return weights
+
