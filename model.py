@@ -255,3 +255,12 @@ def paged_attention_step(q, allocator, seq_id):
     weights = causal_attention(q, K, V)
     return weights
 
+# Step 24 - free_sequence_blocks
+def free_sequence_blocks(allocator, seq_id):
+    block_table = allocator['seq_tables'].get(seq_id, [])
+    for block_id in block_table:
+        free_block(allocator, block_id)
+    if seq_id in allocator['seq_tables']:
+        del allocator['seq_tables'][seq_id]
+    return None
+
