@@ -204,3 +204,30 @@ def free_block(allocator, block_id):
     allocator['free_list'].append(block_id)
     return None
 
+# Step 21 - append_to_paged_cache
+def append_to_paged_cache(allocator, seq_id, k_new, v_new):
+    """Write t new K/V rows into the sequence's paged blocks, allocating as needed."""
+    if 'seq_lengths' not in allocator:
+        allocator['seq_lengths'] = {}
+    sequence_length = allocator['seq_lengths'].get(seq_id, 0)
+    t = k_new.shape[0]
+    block_size = allocator['block_size']
+    new_length = blocks_needed(sequence_length + t, block_size)
+
+    if seq_id not in allocator['seq_tables']:
+        allocator['seq_tables'][seq_id] = []
+    block_table = allocator['seq_tables'][seq_id]
+
+    while len(block_table) < new_length:
+        allocate_block(allocator, seq_id)
+    
+    for i in range(t):
+        p = sequence_length + i
+        b = p // block_size
+        s = p % block_size
+
+        block_id = allocator['seq_tables'][seq_id][b]
+        allocator['K_blocks'] [block_id, s] = k_new[i]
+        allocator['V_blocks'] [block_id, s] = v_new[i]
+    allocator['seq_lengths'][seq_id] = sequence_length + t
+
